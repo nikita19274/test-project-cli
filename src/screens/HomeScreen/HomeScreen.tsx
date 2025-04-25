@@ -18,6 +18,7 @@ type Starship = {
   name: string;
   url: string;
   model: string;
+  consumables: string;
 };
 
 const HomeScreen = () => {

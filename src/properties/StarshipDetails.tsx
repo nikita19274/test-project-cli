@@ -11,8 +11,9 @@ import {RouteProp, useRoute} from '@react-navigation/native';
 import {RootStackParamList} from '../navigation/types';
 import styles from './styles';
 import {useNavigation} from '@react-navigation/native';
-import {useDispatch, UseDispatch} from 'react-redux';
+import {useDispatch, UseDispatch, useSelector} from 'react-redux';
 import {addFavorite, removeFavorite} from '../redux/favoriteSlice';
+import {RootState} from '../redux/store';
 
 type StarshipDetailsRouteProp = RouteProp<
   RootStackParamList,
@@ -23,8 +24,11 @@ const StarshipDetailsScreen = () => {
   const route = useRoute<StarshipDetailsRouteProp>();
   const {starship, id} = route.params;
   const navigation = useNavigation();
-  const [isFavorite, setIsFavorite] = useState(false);
+  // const [isFavorite, setIsFavorite] = useState(false);
   const dispatch = useDispatch();
+
+  const favorites = useSelector((state: RootState) => state.favorites.items);
+  const isFavorite = favorites.some(item => item.url === starship.url);
 
   const toggleFavorite = () => {
     if (isFavorite) {
@@ -32,7 +36,6 @@ const StarshipDetailsScreen = () => {
     } else {
       dispatch(addFavorite(starship));
     }
-    setIsFavorite(prev => !prev);
   };
 
   return (
@@ -41,6 +44,12 @@ const StarshipDetailsScreen = () => {
         <Text style={styles.idText}>ID: {id}</Text>
         <Text style={styles.title}>{starship.name}</Text>
         <Text style={styles.subtitle}>Model: {starship.model}</Text>
+        <Text style={styles.consumables}>
+          Consumables: {starship.consumables}
+        </Text>
+        <Text style={styles.manufacturer}>
+          manufacturer: {starship.manufacturer}
+        </Text>
         <TouchableOpacity
           style={styles.favoriteButton}
           onPress={toggleFavorite}>
